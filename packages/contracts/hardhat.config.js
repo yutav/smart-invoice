@@ -9,7 +9,7 @@ require("solidity-coverage");
 require("./tasks/verify-blockscout");
 
 const {
-  INFURA_PROJECT_ID,
+  ALCHEMY_PROJECT_ID,
   PRIVATE_KEY,
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
@@ -40,15 +40,15 @@ module.exports = {
       accounts: [`0x${PRIVATE_KEY}`],
     },
     kovan: {
-      url: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
+      url: `https://kovan.infura.io/v3/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
     rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
+      url: `https://rinkeby.infura.io/v3/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
     goerli: {
-      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
+      url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
     ganache: {
@@ -56,7 +56,7 @@ module.exports = {
       defaultBalanceEther: 1000,
     },
     mainnet: {
-      url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      url: `https://mainnet.infura.io/v3/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
       gasPrice: 22000000000,
     },
