@@ -9,7 +9,7 @@ require("solidity-coverage");
 require("./tasks/verify-blockscout");
 
 const {
-  INFURA_PROJECT_ID,
+  ALCHEMY_PROJECT_ID,
   PRIVATE_KEY,
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
@@ -43,6 +43,10 @@ module.exports = {
       accounts: [`0x${PRIVATE_KEY}`],
       gasPrice: 22000000000,
     },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
+      accounts: [`0x${PRIVATE_KEY}`]
+    }
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
