@@ -32,6 +32,11 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 price
     );
     event Release(uint256 amount);
+    event Withdraw(uint256 balance);
+    event Lock(address indexed sender);
+
+    event PaidByClient(uint256 clientAward, uint256 providerAward);
+
     event Verified(address indexed client, address indexed invoice);
 
     // solhint-disable-next-line no-empty-blocks
@@ -111,5 +116,70 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
             uint256 balance = IERC20(_token).balanceOf(address(this));
             IERC20(_token).safeTransfer(provider, balance);
         }
+    }
+
+    function _withdraw() internal {
+        require(!locked, "locked");
+        require(block.timestamp > terminationTime, "!terminated");
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        require(balance > 0, "balance is 0");
+
+        IERC20(token).safeTransfer(client, balance);
+
+        emit Withdraw(balance);
+    }
+
+    // withdraw locker remainder to client if termination time passes & no lock
+    function withdraw() external override nonReentrant {
+        return _withdraw();
+    }
+
+    // withdraw non-invoice tokens
+    function withdrawTokens(address _token) external override nonReentrant {
+        if (_token == token) {
+            _withdraw();
+        } else {
+            require(block.timestamp > terminationTime, "!terminated");
+            uint256 balance = IERC20(_token).balanceOf(address(this));
+            require(balance > 0, "balance is 0");
+
+            IERC20(_token).safeTransfer(client, balance);
+        }
+    }
+
+    // client or main (0) provider can lock remainder for resolution during locker period / update request details
+    function lock() external payable override nonReentrant {
+        require(!locked, "locked");
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        require(balance > 0, "balance is 0");
+        require(block.timestamp < terminationTime, "terminated");
+        require(_msgSender() == client || _msgSender() == provider, "!party");
+
+        locked = true;
+
+        emit Lock(_msgSender());
+    }
+
+    function payByClient(uint256 _clientAward, uint256 _providerAward)
+        external
+        override
+        nonReentrant
+    {
+        // called by individual
+        require(locked, "!locked");
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        require(balance > 0, "balance is 0");
+        require(_msgSender() == client, "!client");
+
+        if (_providerAward > 0) {
+            IERC20(token).safeTransfer(provider, _providerAward);
+        }
+        if (_clientAward > 0) {
+            IERC20(token).safeTransfer(client, _clientAward);
+        }
+
+        locked = false;
+
+        emit PaidByClient(_clientAward, _providerAward);
     }
 }
