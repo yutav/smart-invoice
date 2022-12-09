@@ -23,5 +23,5 @@ interface ITokenSeikyu {
 
     function lock() external payable;
 
-    function payByClient(uint256 _clientAward, uint256 _providerAward) external;
+    function payByClient(uint256 _providerAward) external;
 }

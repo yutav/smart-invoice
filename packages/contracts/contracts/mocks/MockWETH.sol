@@ -36,7 +36,7 @@ contract MockWETH {
     }
 
     function approve(address guy, uint256 wad) public returns (bool) {
-        allowance[msg.sender][guy] = wad;
+        allowance[msg.sender][guy] =     wad;
         emit Approval(msg.sender, guy, wad);
         return true;
     }

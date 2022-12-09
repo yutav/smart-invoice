@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "./interfaces/ITokenSeikyu.sol";
+import "./interfaces/IWRAPPED.sol";
+import "hardhat/console.sol";
 
 contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -31,11 +33,12 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         address indexed provider,
         uint256 price
     );
+    event Deposit(address indexed sender, uint256 amount);
     event Release(uint256 amount);
     event Withdraw(uint256 balance);
     event Lock(address indexed sender);
 
-    event PaidByClient(uint256 clientAward, uint256 providerAward);
+    event PayByClient(uint256 providerAward);
 
     event Verified(address indexed client, address indexed invoice);
 
@@ -160,7 +163,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         emit Lock(_msgSender());
     }
 
-    function payByClient(uint256 _clientAward, uint256 _providerAward)
+    function payByClient(uint256 _providerAward)
         external
         override
         nonReentrant
@@ -174,12 +177,17 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         if (_providerAward > 0) {
             IERC20(token).safeTransfer(provider, _providerAward);
         }
-        if (_clientAward > 0) {
-            IERC20(token).safeTransfer(client, _clientAward);
-        }
 
         locked = false;
 
-        emit PaidByClient(_clientAward, _providerAward);
+        emit PayByClient(_providerAward);
+    }
+
+    // receive eth transfers
+    receive() external payable {
+        require(!locked, "locked");
+        require(token == wrappedNativeToken, "!wrappedNativeToken");
+        IWRAPPED(wrappedNativeToken).deposit{value: msg.value}();
+        emit Deposit(_msgSender(), msg.value);
     }
 }

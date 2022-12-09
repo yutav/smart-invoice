@@ -1466,7 +1466,7 @@ describe("SmartInvoice", function () {
     await expect(
       invoice
         .connect(provider)
-        ["addMilestones(uint256[],bytes32)"]([13, 14], EMPTY_BYTES32),
+      ["addMilestones(uint256[],bytes32)"]([13, 14], EMPTY_BYTES32),
     )
       .to.emit(invoice, "MilestonesAdded")
       .withArgs(provider.address, invoice.address, [13, 14]);
@@ -1529,7 +1529,7 @@ describe("SmartInvoice", function () {
     await expect(
       invoice
         .connect(client)
-        ["addMilestones(uint256[])"]([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+      ["addMilestones(uint256[])"]([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
     ).to.be.revertedWith("only 10 new milestones at a time");
   });
 
@@ -1540,7 +1540,7 @@ describe("SmartInvoice", function () {
     const oldDetails = await invoice.details();
     await invoice
       .connect(client)
-      ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32);
+    ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32);
     const newDetails = await invoice.details();
 
     expect(oldDetails).to.equal(EMPTY_BYTES32);
@@ -1555,7 +1555,7 @@ describe("SmartInvoice", function () {
     await expect(
       invoice
         .connect(client)
-        ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32),
+      ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32),
     )
       .to.emit(invoice, "DetailsUpdated")
       .withArgs(client.address, NEW_BYTES32);
@@ -1563,7 +1563,7 @@ describe("SmartInvoice", function () {
     await expect(
       invoice
         .connect(provider)
-        ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32),
+      ["addMilestones(uint256[],bytes32)"]([13, 14], NEW_BYTES32),
     )
       .to.emit(invoice, "DetailsUpdated")
       .withArgs(provider.address, NEW_BYTES32);
@@ -1577,7 +1577,7 @@ describe("SmartInvoice", function () {
     await expect(
       invoice
         .connect(client)
-        ["addMilestones(uint256[],bytes32)"]([13, 14], "0x00"),
+      ["addMilestones(uint256[],bytes32)"]([13, 14], "0x00"),
     ).to.be.reverted;
   });
 });

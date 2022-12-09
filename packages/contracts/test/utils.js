@@ -29,39 +29,31 @@ module.exports.currentTimestamp = async () => {
 };
 
 module.exports.getLockedInvoice = async (
-  SmartInvoice,
+  TokenSeikyu,
   client,
   provider,
-  resolverType,
-  resolver,
   mockToken,
-  amounts,
-  resolutionRate,
-  details,
+  price,
   mockWrappedNativeToken,
   value = 0,
 ) => {
   const currentTime = await module.exports.currentTimestamp();
-  const newInvoice = await SmartInvoice.deploy();
+  const newInvoice = await TokenSeikyu.deploy();
   await newInvoice.deployed();
   await newInvoice.init(
     client.address,
     provider.address,
-    resolverType,
-    resolver.address,
     mockToken.address,
-    amounts,
+    price,
     currentTime + 1000,
-    resolutionRate,
-    details,
     mockWrappedNativeToken.address,
     false,
   );
   expect(await newInvoice["locked()"]()).to.equal(false);
   await mockToken.mock.balanceOf.withArgs(newInvoice.address).returns(10);
-  const receipt = newInvoice["lock(bytes32)"](EMPTY_BYTES32, { value });
+  const receipt = newInvoice["lock()"]();
   await expect(receipt)
     .to.emit(newInvoice, "Lock")
-    .withArgs(client.address, EMPTY_BYTES32);
+    .withArgs(client.address);
   return newInvoice;
 };
