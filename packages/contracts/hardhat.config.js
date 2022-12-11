@@ -30,8 +30,11 @@ module.exports = {
     artifacts: "./build",
   },
   networks: {
+    hardhat: {
+      chainId: 1338
+    },
     goerli: {
-      url: `hhttps://eth-goerli.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
+      url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
     ganache: {

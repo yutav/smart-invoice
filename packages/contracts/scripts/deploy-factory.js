@@ -9,6 +9,7 @@ const wrappedTokenAddress = {
   42: "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
   77: "0xc655c6D80ac92d75fBF4F40e95280aEb855B1E87",
   100: "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
+  1338: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
 };
 
 const networkName = {
@@ -18,6 +19,7 @@ const networkName = {
   42: "Kovan",
   77: "Sokol",
   100: "xDai",
+  1338: "Hardhat"
 };
 
 const networkCurrency = {
@@ -27,6 +29,7 @@ const networkCurrency = {
   42: "ETH",
   77: "SPOA",
   100: "xDai",
+  1338: "ETH"
 };
 
 const BLOCKSCOUT_CHAIN_IDS = [77, 100];
@@ -37,7 +40,7 @@ async function main() {
   const { chainId } = await deployer.provider.getNetwork();
 
   console.log(
-    "Deploying SmartInvoiceFactory on network:",
+    "Deploying TokenSeikyuFactory on network:",
     networkName[chainId],
   );
   console.log("Account address:", address);
@@ -47,51 +50,52 @@ async function main() {
     networkCurrency[chainId],
   );
 
-  const SmartInvoice = await ethers.getContractFactory("SmartInvoice");
-  const smartInvoice = await SmartInvoice.deploy();
-  await smartInvoice.deployed();
-  console.log("Implementation Address:", smartInvoice.address);
+  const TokenSeikyu = await ethers.getContractFactory("TokenSeikyu");
+  const tokenSeikyu = await TokenSeikyu.deploy();
+  await tokenSeikyu.deployed();
+  console.log("Implementation Address:", tokenSeikyu.address);
 
-  const SmartInvoiceFactory = await ethers.getContractFactory(
-    "SmartInvoiceFactory",
+  const TokenSeikyuFactory = await ethers.getContractFactory(
+    "TokenSeikyuFactory",
   );
-  const smartInvoiceFactory = await SmartInvoiceFactory.deploy(
-    smartInvoice.address,
+
+  const tokenSeikyuFactory = await TokenSeikyuFactory.deploy(
+    tokenSeikyu.address,
     wrappedTokenAddress[chainId],
   );
-  await smartInvoiceFactory.deployed();
-  console.log("Factory Address:", smartInvoiceFactory.address);
+  await tokenSeikyuFactory.deployed();
+  console.log("Factory Address:", tokenSeikyuFactory.address);
 
-  await smartInvoice.initLock();
+  await tokenSeikyu.initLock();
 
-  const txHash = smartInvoiceFactory.deployTransaction.hash;
+  const txHash = tokenSeikyuFactory.deployTransaction.hash;
 
   console.log("Transaction Hash:", txHash);
 
   const receipt = await deployer.provider.getTransactionReceipt(txHash);
   console.log("Block Number:", receipt.blockNumber);
 
-  await smartInvoiceFactory.deployTransaction.wait(5);
+  await tokenSeikyuFactory.deployTransaction.wait(5);
 
   const TASK_VERIFY = BLOCKSCOUT_CHAIN_IDS.includes(chainId)
     ? "verify:verify-blockscout"
     : "verify:verify";
 
   await run(TASK_VERIFY, {
-    address: smartInvoice.address,
+    address: tokenSeikyu.address,
     constructorArguments: [],
   });
   console.log("Verified Implementation");
 
   await run(TASK_VERIFY, {
-    address: smartInvoiceFactory.address,
-    constructorArguments: [smartInvoice.address, wrappedTokenAddress[chainId]],
+    address: tokenSeikyuFactory.address,
+    constructorArguments: [tokenSeikyu.address, wrappedTokenAddress[chainId]],
   });
   console.log("Verified Factory");
 
   const deploymentInfo = {
     network: network.name,
-    factory: smartInvoiceFactory.address,
+    factory: tokenSeikyuFactory.address,
     txHash,
     blockNumber: receipt.blockNumber.toString(),
   };
