@@ -296,8 +296,10 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory {
         bytes32 _details,
         bytes32 _salt
     ) external override returns (address) {
-        address invoiceAddress =
-            Clones.cloneDeterministic(implementation, _salt);
+        address invoiceAddress = Clones.cloneDeterministic(
+            implementation,
+            _salt
+        );
 
         _init(
             invoiceAddress,
