@@ -7,7 +7,7 @@ const EMPTY_BYTES32 =
 module.exports.awaitInvoiceAddress = async receipt => {
   if (!receipt || !receipt.logs) return "";
   const abi = new ethers.utils.Interface([
-    "event LogNewInvoice(uint256 indexed id, address invoice, uint256[] amounts)",
+    "event LogNewInvoice(uint256 indexed id, address invoice, uint256 price)",
   ]);
   const eventFragment = abi.events[Object.keys(abi.events)[0]];
   const eventTopic = abi.getEventTopic(eventFragment);
