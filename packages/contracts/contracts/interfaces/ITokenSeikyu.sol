@@ -21,7 +21,7 @@ interface ITokenSeikyu {
 
     function withdrawTokens(address _token) external;
 
-    function lock() external payable;
+    function cancel() external payable;
 
     function payByClient(uint256 _providerAward) external;
 }
