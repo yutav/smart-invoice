@@ -108,6 +108,45 @@ describe("TokenSeikyuFactory", function () {
     expect(await invoiceFactory.getInvoiceAddress(0)).to.equal(invoiceAddress);
   });
 
+  it("Should deploy small abount TokenSeikyu", async function () {
+
+    const smallPrice = "0.002"
+    const decimals = 18 // theres a difference from token
+    const smallPriceEther = ethers.utils.parseUnits(smallPrice, decimals)
+    const smallPriceStr = ethers.utils.formatUnits(smallPriceEther, decimals)
+
+    client = owner.address;
+    provider = addr1.address;
+
+    const receipt = await invoiceFactory.create(
+      client,
+      provider,
+      token,
+      smallPriceEther, // small amount price
+      terminationTime,
+      requireVerification,
+    );
+    invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
+    await expect(receipt)
+      .to.emit(invoiceFactory, "LogNewInvoice")
+      .withArgs(0, invoiceAddress, smallPriceEther);
+
+    const invoice = await TokenSeikyu.attach(invoiceAddress);
+
+    console.log(await invoice.price())
+
+    expect(await invoice.client()).to.equal(client);
+    expect((await invoice.functions.provider())[0]).to.equal(provider);
+    expect(await invoice.token()).to.equal(token);
+    expect(await invoice.price()).to.equal(smallPriceEther)
+    expect(await invoice.terminationTime()).to.equal(terminationTime);
+    expect(await invoice.locked()).to.equal(false);
+    expect(await invoice.disputeId()).to.equal(0);
+    expect(await invoice.wrappedNativeToken()).to.equal(wrappedNativeToken);
+
+    expect(await invoiceFactory.getInvoiceAddress(0)).to.equal(invoiceAddress);
+  });
+
   it("Should predict TokenSeikyu address", async function () {
     client = owner.address;
     provider = addr1.address;

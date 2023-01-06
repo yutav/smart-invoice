@@ -26,7 +26,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     uint256 public price = 0;
     bool public locked;
     uint256 public released = 0;
-    uint256 public disputeId;
+    uint256 public disputeId; // not in use ? keeping in this code for a while.
 
     event Register(
         address indexed client,
@@ -71,11 +71,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         provider = _provider;
         token = _token;
         price = _price;
-        /*
-        for (uint256 i = 0; i < amounts.length; i++) {
-            total = total + amounts[i];
-        }
-        */
+       
         terminationTime = _terminationTime;
         wrappedNativeToken = _wrappedNativeToken;
 
