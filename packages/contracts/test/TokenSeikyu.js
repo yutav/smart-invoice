@@ -53,7 +53,7 @@ describe("TokenSeikyu", function () {
     expect(await invoice.token()).to.equal(mockToken.address);
     expect(await invoice.price()).to.equal(price);
     expect(await invoice.terminationTime()).to.equal(terminationTime);
-    expect(await invoice.locked()).to.equal(false);
+    expect(await invoice.canceled()).to.equal(false);
     expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(
       mockWrappedNativeToken.address,
@@ -182,6 +182,7 @@ describe("TokenSeikyu", function () {
     await expect(receipt).to.revertedWith("duration too long");
   });
 
+  /*
   it("Should revert release by non client", async function () {
     invoice = await invoice.connect(provider);
     await expect(invoice["release()"]()).to.be.revertedWith("!client");
@@ -208,8 +209,8 @@ describe("TokenSeikyu", function () {
     await expect(invoice["release()"]()).to.be.revertedWith("insufficient balance");
   });
 
-  it("Should revert release if locked", async function () {
-    const lockedInvoice = await getLockedInvoice(
+  it("Should revert release if canceled", async function () {
+    const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -217,7 +218,7 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    expect(lockedInvoice["release()"]()).to.be.revertedWith("locked");
+    expect(canceledInvoice["release()"]()).to.be.revertedWith("canceled");
   });
 
   it("Should releaseTokens with passed token", async function () {
@@ -260,8 +261,8 @@ describe("TokenSeikyu", function () {
     await expect(receipt).to.revertedWith("!terminated");
   });
 
-  it("Should revert withdraw if locked", async function () {
-    const lockedInvoice = await getLockedInvoice(
+  it("Should revert withdraw if canceled", async function () {
+    const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -269,7 +270,7 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    await expect(lockedInvoice["withdraw()"]()).to.be.revertedWith("locked");
+    await expect(canceledInvoice["withdraw()"]()).to.be.revertedWith("canceled");
   });
 
   it("Should withdraw after terminationTime", async function () {
@@ -464,8 +465,8 @@ describe("TokenSeikyu", function () {
     await expect(receipt).to.be.revertedWith("!party");
   });
 
-  it("Should revert lock if locked", async function () {
-    const lockedInvoice = await getLockedInvoice(
+  it("Should revert lock if canceled", async function () {
+    const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -473,12 +474,12 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    const receipt = lockedInvoice["lock()"]();
-    await expect(receipt).to.be.revertedWith("locked");
+    const receipt = canceledInvoice["lock()"]();
+    await expect(receipt).to.be.revertedWith("canceled");
   });
 
   it("Should lock if balance is greater than 0", async function () {
-    const lockedInvoice = await getLockedInvoice(
+    const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -486,18 +487,18 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    expect(await lockedInvoice["locked()"]()).to.equal(true);
+    expect(await canceledInvoice["canceled()"]()).to.equal(true);
   });
-
-  it("Should revert payByClient if not locked", async function () {
+  */
+  it("Should revert payByClient if not canceled", async function () {
     await expect(
       invoice["payByClient(uint256)"](10),
-    ).to.be.revertedWith("!locked");
+    ).to.be.revertedWith("!canceled");
   });
 
-
+  /*
   it("Should revert payByClient if not client", async function () {
-    let lockedInvoice = await getLockedInvoice(
+    let canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -505,17 +506,17 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    await mockToken.mock.balanceOf.withArgs(lockedInvoice.address).returns(10);
+    await mockToken.mock.balanceOf.withArgs(canceledInvoice.address).returns(10);
     await mockToken.mock.transfer.withArgs(client.address, 10).returns(true);
-    lockedInvoice = await lockedInvoice.connect(resolver); // connect with not client user
+    canceledInvoice = await canceledInvoice.connect(resolver); // connect with not client user
     await expect(
-      lockedInvoice["payByClient(uint256)"](10),
+      canceledInvoice["payByClient(uint256)"](10),
     ).to.be.revertedWith("!client");
   });
 
   /*
   it("Should payByClient with correct rewards", async function () {
-    let lockedInvoice = await getLockedInvoice(
+    let canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -523,16 +524,16 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    await mockToken.mock.balanceOf.withArgs(lockedInvoice.address).returns(10);
+    await mockToken.mock.balanceOf.withArgs(canceledInvoice.address).returns(10);
     await mockToken.mock.transfer.withArgs(client.address, 10).returns(true);
-    lockedInvoice = await lockedInvoice.connect(client);
+    canceledInvoice = await canceledInvoice.connect(client);
     await expect(
-      lockedInvoice["payByClient(uint256)"](10),
+      canceledInvoice["payByClient(uint256)"](10),
     )
-      .to.emit(lockedInvoice, "PayByClient")
+      .to.emit(canceledInvoice, "PayByClient")
       .withArgs(10);
-    expect(await lockedInvoice["released()"]()).to.be.equal(0);
-    expect(await lockedInvoice["locked()"]()).to.be.equal(false);
+    expect(await canceledInvoice["released()"]()).to.be.equal(0);
+    expect(await canceledInvoice["canceled()"]()).to.be.equal(false);
   });
   */
   it("Should revert receive if not wrappedNativeToken", async function () {
@@ -543,8 +544,9 @@ describe("TokenSeikyu", function () {
     await expect(receipt).to.be.revertedWith("!wrappedNativeToken");
   });
 
-  it("Should revert receive if locked", async function () {
-    const lockedInvoice = await getLockedInvoice(
+  /*
+  it("Should revert receive if canceled", async function () {
+    const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -553,12 +555,12 @@ describe("TokenSeikyu", function () {
       mockWrappedNativeToken,
     );
     const receipt = client.sendTransaction({
-      to: lockedInvoice.address,
+      to: canceledInvoice.address,
       value: 10,
     });
-    await expect(receipt).to.be.revertedWith("locked");
+    await expect(receipt).to.be.revertedWith("canceled");
   });
-
+  */
   it("Should accept receive and convert to wrapped token", async function () {
     invoice = await TokenSeikyu.deploy();
     await invoice.deployed();

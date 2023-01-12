@@ -13,6 +13,7 @@ interface ITokenSeikyu {
         bool _requireVerification
     ) external;
 
+    /*
     function release() external;
 
     function releaseTokens(address _token) external;
@@ -20,8 +21,10 @@ interface ITokenSeikyu {
     function withdraw() external;
 
     function withdrawTokens(address _token) external;
-
+    */
     function cancel() external payable;
+
+    function deny() external payable;
 
     function payByClient(uint256 _providerAward) external;
 }

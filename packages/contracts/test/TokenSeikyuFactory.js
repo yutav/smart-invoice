@@ -101,7 +101,7 @@ describe("TokenSeikyuFactory", function () {
     expect(await invoice.token()).to.equal(token);
     expect(await invoice.price()).to.equal(price)
     expect(await invoice.terminationTime()).to.equal(terminationTime);
-    expect(await invoice.locked()).to.equal(false);
+    expect(await invoice.canceled()).to.equal(false);
     expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(wrappedNativeToken);
 
@@ -140,7 +140,7 @@ describe("TokenSeikyuFactory", function () {
     expect(await invoice.token()).to.equal(token);
     expect(await invoice.price()).to.equal(smallPriceEther)
     expect(await invoice.terminationTime()).to.equal(terminationTime);
-    expect(await invoice.locked()).to.equal(false);
+    expect(await invoice.canceled()).to.equal(false);
     expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(wrappedNativeToken);
 

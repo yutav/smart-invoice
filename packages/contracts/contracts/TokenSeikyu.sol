@@ -163,7 +163,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     }
 
         // deny this invoice by provider
-    function denied() external payable override nonReentrant {
+    function deny() external payable override nonReentrant {
         require(!canceled, "canceled");
         uint256 balance = IERC20(token).balanceOf(address(this));
         require(balance > 0, "balance is 0");
