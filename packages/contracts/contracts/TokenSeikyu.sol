@@ -34,12 +34,11 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 price
     );
     event Deposit(address indexed sender, uint256 amount);
-    event Release(uint256 amount);
-    event Withdraw(uint256 balance);
+    //event Release(uint256 amount);
+    //event Withdraw(uint256 balance);
     event Cancel(address indexed sender);
-
+    event Deny(address indexed sender);
     event PayByClient(uint256 providerAward);
-
     event Verified(address indexed client, address indexed invoice);
 
     // solhint-disable-next-line no-empty-blocks
@@ -172,7 +171,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
 
         canceled = true;
 
-        emit Cancel(_msgSender());
+        emit Deny(_msgSender());
     }
 
     function payByClient(uint256 _providerAward)
