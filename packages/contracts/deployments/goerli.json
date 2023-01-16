@@ -1,6 +1,6 @@
 {
   "network": "goerli",
-  "factory": "0x8b5e1c35215a2DF18Be4b4aC194aa0373a34dDC8",
-  "txHash": "0x497ed292e6a9bad1558ffcaac0f3bad1bd2d19cf0fafc3d34e87e499140ba8d3",
-  "blockNumber": "8305062"
+  "factory": "0xBc31807CdB022E42c16C9201C0A9a4Ca4bBf2F04",
+  "txHash": "0x57b2467899f9a25f98d14fb9ec567c7651ca6dd048f5277bf25ab01db63d6d49",
+  "blockNumber": "8319135"
 }

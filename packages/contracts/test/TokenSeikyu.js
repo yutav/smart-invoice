@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
 const { deployMockContract, provider: waffleProvider } = waffle;
-const { currentTimestamp, getLockedInvoice, awaitInvoiceAddress } = require("./utils");
+const { currentTimestamp, getCanceledInvoice, awaitInvoiceAddress } = require("./utils");
 const IERC20 = require("../build/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json");
 
 const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
@@ -208,7 +208,7 @@ describe("TokenSeikyu", function () {
     await mockToken.mock.balanceOf.withArgs(invoice.address).returns(0);
     await expect(invoice["release()"]()).to.be.revertedWith("insufficient balance");
   });
-
+  
   it("Should revert release if canceled", async function () {
     const canceledInvoice = await getLockedInvoice(
       TokenSeikyu,
@@ -426,8 +426,8 @@ describe("TokenSeikyu", function () {
     const receipt = invoice["lock()"]();
     await expect(receipt).to.be.revertedWith("terminated");
   });
-
-  it("Should revert lock if balance is 0", async function () {
+  */
+  it("Should revert cancel if balance is 0", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();
     await invoice.deployed();
@@ -441,11 +441,10 @@ describe("TokenSeikyu", function () {
       requireVerification,
     );
     await mockToken.mock.balanceOf.withArgs(invoice.address).returns(0);
-    const receipt = invoice["lock()"]();
+    const receipt = invoice["cancel()"]();
     await expect(receipt).to.be.revertedWith("balance is 0");
   });
-
-  it("Should revert lock if not client or provider", async function () {
+  it("Should revert cancel if not client", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();
     await invoice.deployed();
@@ -459,14 +458,13 @@ describe("TokenSeikyu", function () {
       requireVerification,
     );
     await mockToken.mock.balanceOf.withArgs(invoice.address).returns(10);
-    // connect with other account (nor clkient or provider)
-    const invoiceWithResolver = await invoice.connect(resolver);
-    const receipt = invoiceWithResolver["lock()"]();
+    // connect with other account (nor client or provider)
+    const invoiceWithProvider = await invoice.connect(provider);
+    const receipt = invoiceWithProvider["cancel()"]();
     await expect(receipt).to.be.revertedWith("!party");
   });
-
-  it("Should revert lock if canceled", async function () {
-    const canceledInvoice = await getLockedInvoice(
+  it("Should revert cancel if canceled", async function () {
+    const canceledInvoice = await getCanceledInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -474,12 +472,11 @@ describe("TokenSeikyu", function () {
       price,
       mockWrappedNativeToken,
     );
-    const receipt = canceledInvoice["lock()"]();
+    const receipt = canceledInvoice["cancel()"]();
     await expect(receipt).to.be.revertedWith("canceled");
   });
-
-  it("Should lock if balance is greater than 0", async function () {
-    const canceledInvoice = await getLockedInvoice(
+  it("Should cancel if balance is greater than 0", async function () {
+    const canceledInvoice = await getCanceledInvoice(
       TokenSeikyu,
       client,
       provider,
@@ -489,7 +486,53 @@ describe("TokenSeikyu", function () {
     );
     expect(await canceledInvoice["canceled()"]()).to.equal(true);
   });
-  */
+  it("Should revert deny if balance is 0", async function () {
+    const currentTime = await currentTimestamp();
+    invoice = await TokenSeikyu.deploy();
+    await invoice.deployed();
+    await invoice.init(
+      client.address,
+      provider.address,
+      mockToken.address,
+      price,
+      currentTime + 1000,
+      mockWrappedNativeToken.address,
+      requireVerification,
+    );
+    await mockToken.mock.balanceOf.withArgs(invoice.address).returns(0);
+    const receipt = invoice["deny()"]();
+    await expect(receipt).to.be.revertedWith("balance is 0");
+  });
+  it("Should revert deny if not provider", async function () {
+    const currentTime = await currentTimestamp();
+    invoice = await TokenSeikyu.deploy();
+    await invoice.deployed();
+    await invoice.init(
+      client.address,
+      provider.address,
+      mockToken.address,
+      price,
+      currentTime + 1000,
+      mockWrappedNativeToken.address,
+      requireVerification,
+    );
+    await mockToken.mock.balanceOf.withArgs(invoice.address).returns(10);
+    const invoiceWithClient = await invoice.connect(client);
+    const receipt = invoiceWithClient["deny()"]();
+    await expect(receipt).to.be.revertedWith("!party");
+  });
+  it("Should revert deny if canceled", async function () {
+    const canceledInvoice = await getCanceledInvoice(
+      TokenSeikyu,
+      client,
+      provider,
+      mockToken,
+      price,
+      mockWrappedNativeToken,
+    );
+    const receipt = canceledInvoice["deny()"]();
+    await expect(receipt).to.be.revertedWith("canceled");
+  });
   it("Should revert payByClient if not canceled", async function () {
     await expect(
       invoice["payByClient(uint256)"](10),
@@ -614,4 +657,6 @@ describe("TokenSeikyu", function () {
       .to.emit(invoice, "Verified")
       .withArgs(client.address, invoice.address);
   });
+
+
 });

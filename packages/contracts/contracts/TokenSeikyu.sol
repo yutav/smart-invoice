@@ -25,6 +25,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
 
     uint256 public price = 0;
     bool public canceled;
+    bool public denied;
     uint256 public released = 0;
     uint256 public disputeId; // not in use ? keeping in this code for a while.
 
@@ -154,7 +155,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 balance = IERC20(token).balanceOf(address(this));
         require(balance > 0, "balance is 0");
         require(block.timestamp < terminationTime, "terminated");
-        require(_msgSender() == provider, "!party");
+        require(_msgSender() == client, "!party");
 
         canceled = true;
 
@@ -167,9 +168,10 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 balance = IERC20(token).balanceOf(address(this));
         require(balance > 0, "balance is 0");
         require(block.timestamp < terminationTime, "terminated");
-        require(_msgSender() == client, "!party");
+        require(_msgSender() == provider, "!party");
 
         canceled = true;
+        denied = true;
 
         emit Deny(_msgSender());
     }
@@ -179,8 +181,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         override
         nonReentrant
     {
-        // called by individual
-        require(canceled, "!canceled");
+        require(!canceled, "canceled");
         uint256 balance = IERC20(token).balanceOf(address(this));
         require(balance > 0, "balance is 0");
         require(_msgSender() == client, "!client");
@@ -188,8 +189,6 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         if (_providerAward > 0) {
             IERC20(token).safeTransfer(provider, _providerAward);
         }
-
-        canceled = false;
 
         emit PayByClient(_providerAward);
     }

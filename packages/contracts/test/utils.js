@@ -1,5 +1,6 @@
 const { ethers, waffle } = require("hardhat");
 const { expect } = require("chai");
+const { execPath } = require("process");
 
 const EMPTY_BYTES32 =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -28,7 +29,7 @@ module.exports.currentTimestamp = async () => {
   return +block.timestamp;
 };
 
-module.exports.getLockedInvoice = async (
+module.exports.getCanceledInvoice = async (
   TokenSeikyu,
   client,
   provider,
@@ -49,11 +50,12 @@ module.exports.getLockedInvoice = async (
     mockWrappedNativeToken.address,
     false,
   );
-  expect(await newInvoice["locked()"]()).to.equal(false);
+  expect(await newInvoice["canceled()"]()).to.equal(false);
   await mockToken.mock.balanceOf.withArgs(newInvoice.address).returns(10);
-  const receipt = newInvoice["lock()"]();
+  const receipt = newInvoice["cancel()"]();
+
   await expect(receipt)
-    .to.emit(newInvoice, "Lock")
+    .to.emit(newInvoice, "Cancel")
     .withArgs(client.address);
   return newInvoice;
 };
