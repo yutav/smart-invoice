@@ -6,7 +6,7 @@
     "build": "hardhat compile && yarn flatten",
     "test": "hardhat test",
     "verify-trigger": "hardhat run scripts/verifyTrigger.js --network localhost",
-    "node-graph": "hh node --hostname 0.0.0.0",
+    "node-graph": "hardhat node --hostname 0.0.0.0",
     "console-local": "npx hardhat console --network localhost",
     "coverage": "hardhat coverage",
     "help": "hardhat help",
