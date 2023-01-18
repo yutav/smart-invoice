@@ -50,7 +50,18 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: {
+      goerli: ETHERSCAN_API_KEY,
+      hardhat: ETHERSCAN_API_KEY
+    },
+    customChains: [
+      {
+        network: "hardhat",
+        chainId: 31337,
+        urls: {
+        }
+      }
+    ]
   },
   gasReporter: {
     coinmarketcap: COINMARKETCAP_API_KEY,

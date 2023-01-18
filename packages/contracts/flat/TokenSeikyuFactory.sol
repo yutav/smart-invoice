@@ -57,11 +57,15 @@ interface ITokenSeikyu {
 
     function withdrawTokens(address _token) external;
     */
-    function cancel() external payable;
+    function cancel() external;
 
-    function deny() external payable;
+    function deny() external;
+
+    function accept() external;
 
     function payByClient(uint256 _providerAward) external;
+
+    function tokenBalance(address user, address checkToken) external ;
 }
 
 

@@ -10,6 +10,7 @@ const wrappedTokenAddress = {
   77: "0xc655c6D80ac92d75fBF4F40e95280aEb855B1E87",
   100: "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
   1338: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  31337: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 };
 
 const networkName = {
@@ -19,7 +20,8 @@ const networkName = {
   42: "Kovan",
   77: "Sokol",
   100: "xDai",
-  1338: "Hardhat"
+  1338: "Hardhat",
+  31337: "locallhost"
 };
 
 const networkCurrency = {
@@ -29,7 +31,8 @@ const networkCurrency = {
   42: "ETH",
   77: "SPOA",
   100: "xDai",
-  1338: "ETH"
+  1338: "ETH",
+  31337: "ETH"
 };
 
 const BLOCKSCOUT_CHAIN_IDS = [77, 100];
@@ -75,7 +78,7 @@ async function main() {
   const receipt = await deployer.provider.getTransactionReceipt(txHash);
   console.log("Block Number:", receipt.blockNumber);
 
-  await tokenSeikyuFactory.deployTransaction.wait(5);
+  //  await tokenSeikyuFactory.deployTransaction.wait(5);
 
   const TASK_VERIFY = BLOCKSCOUT_CHAIN_IDS.includes(chainId)
     ? "verify:verify-blockscout"

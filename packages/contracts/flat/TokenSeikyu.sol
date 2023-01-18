@@ -26,11 +26,15 @@ interface ITokenSeikyu {
 
     function withdrawTokens(address _token) external;
     */
-    function cancel() external payable;
+    function cancel() external;
 
-    function deny() external payable;
+    function deny() external;
+
+    function accept() external;
 
     function payByClient(uint256 _providerAward) external;
+
+    function tokenBalance(address user, address checkToken) external ;
 }
 
 
@@ -1580,20 +1584,14 @@ library console {
 }
 
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.0
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.8.0
 
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
+// OpenZeppelin Contracts (last updated v4.8.0) (security/ReentrancyGuard.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to,
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ *
+ * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
+ * available, which can be applied to functions to make 

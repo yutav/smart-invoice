@@ -26,6 +26,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     uint256 public price = 0;
     bool public canceled;
     bool public denied;
+    bool public accepted;
     uint256 public released = 0;
     uint256 public disputeId; // not in use ? keeping in this code for a while.
 
@@ -39,8 +40,10 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     //event Withdraw(uint256 balance);
     event Cancel(address indexed sender);
     event Deny(address indexed sender);
+    event Accept(address indexed sender);
     event PayByClient(uint256 providerAward);
     event Verified(address indexed client, address indexed invoice);
+    event TokenBalance(uint256 tokenBalance);
 
     // solhint-disable-next-line no-empty-blocks
     function initLock() external initializer {}
@@ -148,12 +151,12 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     }
 */
 
-
     // cancel this invoice by client
-    function cancel() external payable override nonReentrant {
+    function cancel() external override nonReentrant {
         require(!canceled, "canceled");
         uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "balance is 0");
+//        require(balance > 0, "balance is 0");
+        emit TokenBalance(balance);
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == client, "!party");
 
@@ -163,7 +166,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     }
 
         // deny this invoice by provider
-    function deny() external payable override nonReentrant {
+    function deny() external override nonReentrant {
         require(!canceled, "canceled");
         uint256 balance = IERC20(token).balanceOf(address(this));
         require(balance > 0, "balance is 0");
@@ -174,6 +177,19 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         denied = true;
 
         emit Deny(_msgSender());
+    }
+
+    function accept() external override nonReentrant {
+        require(!canceled, "canceled");
+        require(!denied, "denied");
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        require(balance > 0, "balance is 0");
+        require(block.timestamp < terminationTime, "terminated");
+        require(_msgSender() == provider, "!party");
+
+        accepted = true;
+
+        emit Accept(_msgSender());
     }
 
     function payByClient(uint256 _providerAward)
@@ -191,6 +207,11 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         }
 
         emit PayByClient(_providerAward);
+    }
+
+    function tokenBalance(address user, address checkToken) external override nonReentrant {
+        uint256 balance = IERC20(checkToken).balanceOf(user);
+        emit TokenBalance(balance);
     }
 
     // receive eth transfers
