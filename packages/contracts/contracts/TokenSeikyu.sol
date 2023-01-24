@@ -154,9 +154,8 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     // cancel this invoice by client
     function cancel() external override nonReentrant {
         require(!canceled, "canceled");
-        uint256 balance = IERC20(token).balanceOf(address(this));
-//        require(balance > 0, "balance is 0");
-        emit TokenBalance(balance);
+        require(!accepted, "accepted");
+        require(!denied, "denied");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == client, "!party");
 
@@ -168,12 +167,11 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         // deny this invoice by provider
     function deny() external override nonReentrant {
         require(!canceled, "canceled");
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "balance is 0");
+        require(!accepted, "accepted");
+        require(!denied, "denied");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == provider, "!party");
 
-        canceled = true;
         denied = true;
 
         emit Deny(_msgSender());
@@ -181,9 +179,8 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
 
     function accept() external override nonReentrant {
         require(!canceled, "canceled");
+        require(!accepted, "accepted");
         require(!denied, "denied");
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "balance is 0");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == provider, "!party");
 

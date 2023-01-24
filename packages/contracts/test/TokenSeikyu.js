@@ -427,6 +427,10 @@ describe("TokenSeikyu", function () {
     await expect(receipt).to.be.revertedWith("terminated");
   });
   */
+
+  /*
+  MEMO: キャンセル時には残高不足でもrevertしない。
+
   it("Should revert cancel if balance is 0", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();
@@ -444,6 +448,7 @@ describe("TokenSeikyu", function () {
     const receipt = invoice["cancel()"]();
     await expect(receipt).to.be.revertedWith("balance is 0");
   });
+  */
   it("Should revert cancel if not client", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();
@@ -486,6 +491,7 @@ describe("TokenSeikyu", function () {
     );
     expect(await canceledInvoice["canceled()"]()).to.equal(true);
   });
+  /*
   it("Should revert deny if balance is 0", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();
@@ -503,6 +509,7 @@ describe("TokenSeikyu", function () {
     const receipt = invoice["deny()"]();
     await expect(receipt).to.be.revertedWith("balance is 0");
   });
+  */
   it("Should revert deny if not provider", async function () {
     const currentTime = await currentTimestamp();
     invoice = await TokenSeikyu.deploy();

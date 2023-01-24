@@ -2,7 +2,6 @@ require("hardhat/config");
 require("dotenv").config();
 require("@nomiclabs/hardhat-ganache");
 require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("hardhat-gas-reporter");
@@ -47,7 +46,9 @@ module.exports = {
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`]
-    }
+    },
+    hardhat: {
+    },
   },
   etherscan: {
     apiKey: {
@@ -59,6 +60,7 @@ module.exports = {
         network: "hardhat",
         chainId: 31337,
         urls: {
+          apiURL: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
         }
       }
     ]

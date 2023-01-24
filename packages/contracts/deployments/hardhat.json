@@ -1,6 +1,6 @@
 {
   "network": "hardhat",
-  "factory": "0xB9b672c04d176468a6b2afDA0d8C811b6B73706b",
-  "txHash": "0x57b2467899f9a25f98d14fb9ec567c7651ca6dd048f5277bf25ab01db63d6d49",
-  "blockNumber": "1"
+  "factory": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+  "txHash": "0xda94086308cafd3d8e47927cd6f2404fbc74944623af2a6526ee44a7cbd21154",
+  "blockNumber": "38"
 }
