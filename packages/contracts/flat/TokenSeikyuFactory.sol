@@ -1,8 +1,41 @@
 // Sources flattened with hardhat v2.12.2 https://hardhat.org
 
-// File contracts/interfaces/ITokenSeikyu.sol
+// File contracts/interfaces/ITokenSeikyuFactory.sol
 
 // SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+interface ITokenSeikyuFactory {
+    function create(
+        address _client,
+        address _provider,
+        address _token,
+        uint256 _price,
+        uint256 _terminationTime,
+        bytes32 _details,
+        bool _requireVerification
+    ) external returns (address);
+
+    function createDeterministic(
+        address _client,
+        address _provider,
+        address _token,
+        uint256 _price,
+        uint256 _terminationTime,
+        bytes32 _details,
+        bytes32 _salt,
+        bool _requireVerification
+    ) external returns (address);
+
+    function predictDeterministicAddress(bytes32 _salt)
+        external
+        returns (address);
+}
+
+
+// File contracts/interfaces/ITokenSeikyu.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -13,6 +46,7 @@ interface ITokenSeikyu {
         address _token,
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
+        bytes32 _details,
         address _wrappedNativeToken,
         bool _requireVerification
     ) external;
@@ -35,37 +69,6 @@ interface ITokenSeikyu {
     function payByClient(uint256 _providerAward) external;
 
     function tokenBalance(address user, address checkToken) external ;
-}
-
-
-// File contracts/interfaces/ITokenSeikyuFactory.sol
-
-
-pragma solidity ^0.8.0;
-
-interface ITokenSeikyuFactory {
-    function create(
-        address _client,
-        address _provider,
-        address _token,
-        uint256 _price,
-        uint256 _terminationTime,
-        bool _requireVerification
-    ) external returns (address);
-
-    function createDeterministic(
-        address _client,
-        address _provider,
-        address _token,
-        uint256 _price,
-        uint256 _terminationTime,
-        bytes32 _salt,
-        bool _requireVerification
-    ) external returns (address);
-
-    function predictDeterministicAddress(bytes32 _salt)
-        external
-        returns (address);
 }
 
 
@@ -194,6 +197,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
+        bytes32 _details,
         bool _requireVerification
     ) internal {
         ITokenSeikyu(_invoiceAddress).init(
@@ -202,6 +206,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _token,
             _price,
             _terminationTime,
+            _details,
             wrappedNativeToken,
             _requireVerification
         );
@@ -219,6 +224,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
+        bytes32 _details,
         bool _requireVerification
     ) external override returns (address) {
         address invoiceAddress = Clones.clone(implementation);
@@ -230,6 +236,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _token,
             _price,
             _terminationTime,
+            _details,
             _requireVerification
         );
 
@@ -251,6 +258,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
+        bytes32 _details,
         bytes32 _salt,
         bool _requireVerification
     ) external override returns (address) {
@@ -266,6 +274,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _token,
             _price,
             _terminationTime,
+            _details,
             _requireVerification
         );
 

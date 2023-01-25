@@ -35,6 +35,7 @@ module.exports.getCanceledInvoice = async (
   provider,
   mockToken,
   price,
+  details,
   mockWrappedNativeToken,
   value = 0,
 ) => {
@@ -47,6 +48,7 @@ module.exports.getCanceledInvoice = async (
     mockToken.address,
     price,
     currentTime + 1000,
+    details,
     mockWrappedNativeToken.address,
     false,
   );

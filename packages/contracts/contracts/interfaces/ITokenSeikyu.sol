@@ -9,6 +9,7 @@ interface ITokenSeikyu {
         address _token,
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
+        bytes32 _details,
         address _wrappedNativeToken,
         bool _requireVerification
     ) external;

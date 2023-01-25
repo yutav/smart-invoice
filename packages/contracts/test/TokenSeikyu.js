@@ -42,6 +42,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -53,8 +54,8 @@ describe("TokenSeikyu", function () {
     expect(await invoice.token()).to.equal(mockToken.address);
     expect(await invoice.price()).to.equal(price);
     expect(await invoice.terminationTime()).to.equal(terminationTime);
+    expect(await invoice.details()).to.equal(EMPTY_BYTES32);
     expect(await invoice.canceled()).to.equal(false);
-    expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(
       mockWrappedNativeToken.address,
     );
@@ -78,6 +79,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime - 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -96,6 +98,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime - 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -112,6 +115,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime - 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -129,6 +133,7 @@ describe("TokenSeikyu", function () {
       ADDRESS_ZERO,
       price,
       currentTime - 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -144,6 +149,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       ADDRESS_ZERO,
       requireVerification,
     );
@@ -160,6 +166,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime - 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -176,6 +183,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime + 5 * 365 * 24 * 3600,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -459,6 +467,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime + 1000,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -475,6 +484,7 @@ describe("TokenSeikyu", function () {
       provider,
       mockToken,
       price,
+      EMPTY_BYTES32,
       mockWrappedNativeToken,
     );
     const receipt = canceledInvoice["cancel()"]();
@@ -487,6 +497,7 @@ describe("TokenSeikyu", function () {
       provider,
       mockToken,
       price,
+      EMPTY_BYTES32,
       mockWrappedNativeToken,
     );
     expect(await canceledInvoice["canceled()"]()).to.equal(true);
@@ -520,6 +531,7 @@ describe("TokenSeikyu", function () {
       mockToken.address,
       price,
       currentTime + 1000,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -535,6 +547,7 @@ describe("TokenSeikyu", function () {
       provider,
       mockToken,
       price,
+      EMPTY_BYTES32,
       mockWrappedNativeToken,
     );
     const receipt = canceledInvoice["deny()"]();
@@ -620,6 +633,7 @@ describe("TokenSeikyu", function () {
       mockWrappedNativeToken.address,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       mockWrappedNativeToken.address,
       requireVerification,
     );
@@ -657,6 +671,7 @@ describe("TokenSeikyu", function () {
         mockToken.address,
         price,
         currentTime + 1000,
+        EMPTY_BYTES32,
         mockWrappedNativeToken.address,
         noVerification,
       ),

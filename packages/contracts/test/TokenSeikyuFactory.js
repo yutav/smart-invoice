@@ -87,6 +87,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       requireVerification,
     );
     invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
@@ -102,7 +103,6 @@ describe("TokenSeikyuFactory", function () {
     expect(await invoice.price()).to.equal(price)
     expect(await invoice.terminationTime()).to.equal(terminationTime);
     expect(await invoice.canceled()).to.equal(false);
-    expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(wrappedNativeToken);
 
     expect(await invoiceFactory.getInvoiceAddress(0)).to.equal(invoiceAddress);
@@ -124,6 +124,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       smallPriceEther, // small amount price
       terminationTime,
+      EMPTY_BYTES32,
       requireVerification,
     );
     invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
@@ -141,7 +142,6 @@ describe("TokenSeikyuFactory", function () {
     expect(await invoice.price()).to.equal(smallPriceEther)
     expect(await invoice.terminationTime()).to.equal(terminationTime);
     expect(await invoice.canceled()).to.equal(false);
-    expect(await invoice.disputeId()).to.equal(0);
     expect(await invoice.wrappedNativeToken()).to.equal(wrappedNativeToken);
 
     expect(await invoiceFactory.getInvoiceAddress(0)).to.equal(invoiceAddress);
@@ -161,6 +161,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       EMPTY_BYTES32, // salt
       requireVerification,
     );
@@ -182,6 +183,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       requireVerification,
     );
     const invoice0 = await awaitInvoiceAddress(await receipt.wait());
@@ -192,6 +194,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
+      EMPTY_BYTES32,
       requireVerification,
     );
     const invoice1 = await awaitInvoiceAddress(await receipt.wait());

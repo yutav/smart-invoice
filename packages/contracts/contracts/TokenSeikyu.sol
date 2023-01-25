@@ -27,8 +27,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     bool public canceled;
     bool public denied;
     bool public accepted;
-    uint256 public released = 0;
-    uint256 public disputeId; // not in use ? keeping in this code for a while.
+    bytes32 public details;
 
     event Register(
         address indexed client,
@@ -54,6 +53,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         address _token,
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
+        bytes32 _details,
         address _wrappedNativeToken,
         bool _requireVerification
     ) external override initializer {
@@ -74,8 +74,8 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         provider = _provider;
         token = _token;
         price = _price;
-       
         terminationTime = _terminationTime;
+        details = _details;
         wrappedNativeToken = _wrappedNativeToken;
 
         if (!_requireVerification) emit Verified(_client, address(this));

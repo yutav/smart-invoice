@@ -1,8 +1,19 @@
 // Sources flattened with hardhat v2.12.2 https://hardhat.org
 
-// File contracts/interfaces/ITokenSeikyu.sol
+// File contracts/interfaces/IWRAPPED.sol
 
 // SPDX-License-Identifier: MIT
+
+pragma solidity >=0.8.0;
+
+interface IWRAPPED {
+    // brief interface for canonical native token wrapper contract
+    function deposit() external payable;
+}
+
+
+// File contracts/interfaces/ITokenSeikyu.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -13,6 +24,7 @@ interface ITokenSeikyu {
         address _token,
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
+        bytes32 _details,
         address _wrappedNativeToken,
         bool _requireVerification
     ) external;
@@ -35,17 +47,6 @@ interface ITokenSeikyu {
     function payByClient(uint256 _providerAward) external;
 
     function tokenBalance(address user, address checkToken) external ;
-}
-
-
-// File contracts/interfaces/IWRAPPED.sol
-
-
-pragma solidity >=0.8.0;
-
-interface IWRAPPED {
-    // brief interface for canonical native token wrapper contract
-    function deposit() external payable;
 }
 
 
@@ -1584,18 +1585,13 @@ library console {
 }
 
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.0
+// File @openzeppelin/contracts/utils/Context.sol@v4.8.0
 
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
+// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that 
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed 
