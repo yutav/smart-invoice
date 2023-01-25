@@ -134,8 +134,6 @@ describe("TokenSeikyuFactory", function () {
 
     const invoice = await TokenSeikyu.attach(invoiceAddress);
 
-    console.log(await invoice.price())
-
     expect(await invoice.client()).to.equal(client);
     expect((await invoice.functions.provider())[0]).to.equal(provider);
     expect(await invoice.token()).to.equal(token);

@@ -8,6 +8,7 @@ const IERC20 = require("../build/@openzeppelin/contracts/token/ERC20/IERC20.sol/
 const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 const EMPTY_BYTES32 =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
+
 const price = 10;
 const terminationTime =
   parseInt(new Date().getTime() / 1000, 10) + 30 * 24 * 60 * 60;
