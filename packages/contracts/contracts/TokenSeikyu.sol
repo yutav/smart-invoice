@@ -35,13 +35,9 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 price
     );
     event Deposit(address indexed sender, uint256 amount);
-    //event Release(uint256 amount);
-    //event Withdraw(uint256 balance);
     event Cancel(address indexed sender);
     event Deny(address indexed sender);
     event Accept(address indexed sender);
-    event PayByClient(uint256 providerAward);
-    event Verified(address indexed client, address indexed invoice);
     event TokenBalance(uint256 tokenBalance);
 
     // solhint-disable-next-line no-empty-blocks
@@ -54,8 +50,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
         bytes32 _details,
-        address _wrappedNativeToken,
-        bool _requireVerification
+        address _wrappedNativeToken
     ) external override initializer {
         require(_client != address(0), "invalid client");
         require(_provider != address(0), "invalid provider");
@@ -78,78 +73,13 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         details = _details;
         wrappedNativeToken = _wrappedNativeToken;
 
-        if (!_requireVerification) emit Verified(_client, address(this));
-
         emit Register(_client, _provider, price);
     }
 
-    // Client verifies address before deposits
-    function verify() external {
-        require(msg.sender == client, "!client");
-        emit Verified(client, address(this));
-    }
 
     function getPrice() public view returns (uint256) {
         return price;
     }
-
-/*
-    function _release() internal {
-        require(!canceled, "canceled");
-        require(_msgSender() == client, "!client");
-
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance >= price, "insufficient balance");
-
-        IERC20(token).safeTransfer(provider, price);
-        released = released + price;
-        emit Release(price);
-    }
-
-    function release() external override nonReentrant {
-        return _release();
-    }
-
-    // release non-invoice tokens
-    function releaseTokens(address _token) external override nonReentrant {
-        if (_token == token) {
-            _release();
-        } else {
-            require(_msgSender() == client, "!client");
-            uint256 balance = IERC20(_token).balanceOf(address(this));
-            IERC20(_token).safeTransfer(provider, balance);
-        }
-    }
-
-    function _withdraw() internal {
-        require(!canceled, "canceled");
-        require(block.timestamp > terminationTime, "!terminated");
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "balance is 0");
-
-        IERC20(token).safeTransfer(client, balance);
-
-        emit Withdraw(balance);
-    }
-
-    // withdraw locker remainder to client if termination time passes & no lock
-    function withdraw() external override nonReentrant {
-        return _withdraw();
-    }
-
-    // withdraw non-invoice tokens
-    function withdrawTokens(address _token) external override nonReentrant {
-        if (_token == token) {
-            _withdraw();
-        } else {
-            require(block.timestamp > terminationTime, "!terminated");
-            uint256 balance = IERC20(_token).balanceOf(address(this));
-            require(balance > 0, "balance is 0");
-
-            IERC20(_token).safeTransfer(client, balance);
-        }
-    }
-*/
 
     // cancel this invoice by client
     function cancel() external override nonReentrant {
@@ -157,7 +87,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!accepted, "accepted");
         require(!denied, "denied");
         require(block.timestamp < terminationTime, "terminated");
-        require(_msgSender() == client, "!party");
+        require(_msgSender() == provider, "!party");
 
         canceled = true;
 
@@ -170,7 +100,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!accepted, "accepted");
         require(!denied, "denied");
         require(block.timestamp < terminationTime, "terminated");
-        require(_msgSender() == provider, "!party");
+        require(_msgSender() == client, "!party");
 
         denied = true;
 
@@ -182,29 +112,13 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!accepted, "accepted");
         require(!denied, "denied");
         require(block.timestamp < terminationTime, "terminated");
-        require(_msgSender() == provider, "!party");
+        require(_msgSender() == client, "!party");
 
         accepted = true;
 
         emit Accept(_msgSender());
     }
 
-    function payByClient(uint256 _providerAward)
-        external
-        override
-        nonReentrant
-    {
-        require(!canceled, "canceled");
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "balance is 0");
-        require(_msgSender() == client, "!client");
-
-        if (_providerAward > 0) {
-            IERC20(token).safeTransfer(provider, _providerAward);
-        }
-
-        emit PayByClient(_providerAward);
-    }
 
     function tokenBalance(address user, address checkToken) external override nonReentrant {
         uint256 balance = IERC20(checkToken).balanceOf(user);

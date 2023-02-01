@@ -9,8 +9,7 @@ interface ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
-        bytes32 _details,
-        bool _requireVerification
+        bytes32 _details
     ) external returns (address);
 
     function createDeterministic(
@@ -20,8 +19,7 @@ interface ITokenSeikyuFactory {
         uint256 _price,
         uint256 _terminationTime,
         bytes32 _details,
-        bytes32 _salt,
-        bool _requireVerification
+        bytes32 _salt
     ) external returns (address);
 
     function predictDeterministicAddress(bytes32 _salt)

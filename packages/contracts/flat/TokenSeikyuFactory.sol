@@ -13,8 +13,7 @@ interface ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
-        bytes32 _details,
-        bool _requireVerification
+        bytes32 _details
     ) external returns (address);
 
     function createDeterministic(
@@ -24,8 +23,7 @@ interface ITokenSeikyuFactory {
         uint256 _price,
         uint256 _terminationTime,
         bytes32 _details,
-        bytes32 _salt,
-        bool _requireVerification
+        bytes32 _salt
     ) external returns (address);
 
     function predictDeterministicAddress(bytes32 _salt)
@@ -47,26 +45,14 @@ interface ITokenSeikyu {
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
         bytes32 _details,
-        address _wrappedNativeToken,
-        bool _requireVerification
+        address _wrappedNativeToken
     ) external;
 
-    /*
-    function release() external;
-
-    function releaseTokens(address _token) external;
-
-    function withdraw() external;
-
-    function withdrawTokens(address _token) external;
-    */
     function cancel() external;
 
     function deny() external;
 
     function accept() external;
-
-    function payByClient(uint256 _providerAward) external;
 
     function tokenBalance(address user, address checkToken) external ;
 }
@@ -197,8 +183,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
-        bytes32 _details,
-        bool _requireVerification
+        bytes32 _details
     ) internal {
         ITokenSeikyu(_invoiceAddress).init(
             _client,
@@ -207,8 +192,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _price,
             _terminationTime,
             _details,
-            wrappedNativeToken,
-            _requireVerification
+            wrappedNativeToken
         );
 
         uint256 invoiceId = invoiceCount;
@@ -224,8 +208,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         address _token,
         uint256 _price,
         uint256 _terminationTime,
-        bytes32 _details,
-        bool _requireVerification
+        bytes32 _details
     ) external override returns (address) {
         address invoiceAddress = Clones.clone(implementation);
 
@@ -236,8 +219,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _token,
             _price,
             _terminationTime,
-            _details,
-            _requireVerification
+            _details
         );
 
         return invoiceAddress;
@@ -259,8 +241,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
         uint256 _price,
         uint256 _terminationTime,
         bytes32 _details,
-        bytes32 _salt,
-        bool _requireVerification
+        bytes32 _salt
     ) external override returns (address) {
         address invoiceAddress = Clones.cloneDeterministic(
             implementation,
@@ -274,8 +255,7 @@ contract TokenSeikyuFactory is ITokenSeikyuFactory {
             _token,
             _price,
             _terminationTime,
-            _details,
-            _requireVerification
+            _details
         );
 
         return invoiceAddress;

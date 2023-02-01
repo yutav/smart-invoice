@@ -87,8 +87,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
-      EMPTY_BYTES32,
-      requireVerification,
+      EMPTY_BYTES32
     );
     invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
     await expect(receipt)
@@ -124,8 +123,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       smallPriceEther, // small amount price
       terminationTime,
-      EMPTY_BYTES32,
-      requireVerification,
+      EMPTY_BYTES32
     );
     invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
     await expect(receipt)
@@ -150,7 +148,7 @@ describe("TokenSeikyuFactory", function () {
     provider = addr1.address;
 
     const predictedAddress = await invoiceFactory.predictDeterministicAddress(
-      EMPTY_BYTES32,
+      EMPTY_BYTES32
     );
 
     const receipt = await invoiceFactory.createDeterministic(
@@ -160,8 +158,7 @@ describe("TokenSeikyuFactory", function () {
       price,
       terminationTime,
       EMPTY_BYTES32,
-      EMPTY_BYTES32, // salt
-      requireVerification,
+      EMPTY_BYTES32 // salt
     );
 
     invoiceAddress = await awaitInvoiceAddress(await receipt.wait());
@@ -181,8 +178,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
-      EMPTY_BYTES32,
-      requireVerification,
+      EMPTY_BYTES32
     );
     const invoice0 = await awaitInvoiceAddress(await receipt.wait());
     expect(await invoiceFactory.invoiceCount()).to.equal(1);
@@ -192,8 +188,7 @@ describe("TokenSeikyuFactory", function () {
       token,
       price,
       terminationTime,
-      EMPTY_BYTES32,
-      requireVerification,
+      EMPTY_BYTES32
     );
     const invoice1 = await awaitInvoiceAddress(await receipt.wait());
     expect(await invoiceFactory.invoiceCount()).to.equal(2);

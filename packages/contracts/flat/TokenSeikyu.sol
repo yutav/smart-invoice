@@ -14,26 +14,14 @@ interface ITokenSeikyu {
         uint256 _price,
         uint256 _terminationTime, // exact termination date in seconds since epoch
         bytes32 _details,
-        address _wrappedNativeToken,
-        bool _requireVerification
+        address _wrappedNativeToken
     ) external;
 
-    /*
-    function release() external;
-
-    function releaseTokens(address _token) external;
-
-    function withdraw() external;
-
-    function withdrawTokens(address _token) external;
-    */
     function cancel() external;
 
     function deny() external;
 
     function accept() external;
-
-    function payByClient(uint256 _providerAward) external;
 
     function tokenBalance(address user, address checkToken) external ;
 }
@@ -1585,16 +1573,19 @@ library console {
 }
 
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.0
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.8.0
 
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
+// OpenZeppelin Contracts (last updated v4.8.0) (security/ReentrancyGuard.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`)
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ *
+ * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
+ * available, which can be applied to functions to make sure there are no nested
+ * (reentrant) calls to them.
+ *
+ * Note that because there is a single `nonReentrant` guard, functions marked as
+ * `nonReentrant` may not call one another. This can be worked around by making
+ * those functions `private`, and then ad

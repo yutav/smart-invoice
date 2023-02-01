@@ -49,15 +49,16 @@ module.exports.getCanceledInvoice = async (
     price,
     currentTime + 1000,
     details,
-    mockWrappedNativeToken.address,
-    false,
+    mockWrappedNativeToken.address
   );
   expect(await newInvoice["canceled()"]()).to.equal(false);
-  await mockToken.mock.balanceOf.withArgs(newInvoice.address).returns(10);
-  const receipt = newInvoice["cancel()"]();
+
+  const invoiceWithProvider = await newInvoice.connect(provider);
+  await mockToken.mock.balanceOf.withArgs(invoiceWithProvider.address).returns(10);
+  const receipt = invoiceWithProvider["cancel()"]();
 
   await expect(receipt)
-    .to.emit(newInvoice, "Cancel")
-    .withArgs(client.address);
-  return newInvoice;
+    .to.emit(invoiceWithProvider, "Cancel")
+    .withArgs(provider.address);
+  return invoiceWithProvider;
 };
