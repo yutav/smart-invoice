@@ -1,8 +1,19 @@
 // Sources flattened with hardhat v2.12.2 https://hardhat.org
 
-// File contracts/interfaces/ITokenSeikyu.sol
+// File contracts/interfaces/IWRAPPED.sol
 
 // SPDX-License-Identifier: MIT
+
+pragma solidity >=0.8.0;
+
+interface IWRAPPED {
+    // brief interface for canonical native token wrapper contract
+    function deposit() external payable;
+}
+
+
+// File contracts/interfaces/ITokenSeikyu.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -24,17 +35,6 @@ interface ITokenSeikyu {
     function accept() external;
 
     function tokenBalance(address user, address checkToken) external ;
-}
-
-
-// File contracts/interfaces/IWRAPPED.sol
-
-
-pragma solidity >=0.8.0;
-
-interface IWRAPPED {
-    // brief interface for canonical native token wrapper contract
-    function deposit() external payable;
 }
 
 
@@ -1573,19 +1573,25 @@ library console {
 }
 
 
-// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.8.0
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.0
 
-// OpenZeppelin Contracts (last updated v4.8.0) (security/ReentrancyGuard.sol)
+// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Contract module that helps prevent reentrant calls to a function.
- *
- * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
- * available, which can be applied to functions to make sure there are no nested
- * (reentrant) calls to them.
- *
- * Note that because there is a single `nonReentrant` guard, functions marked as
- * `nonReentrant` may not call one another. This can be worked around by making
- * those functions `private`, and then ad
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
+interface IERC20 {
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */

@@ -34,7 +34,6 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         address indexed provider,
         uint256 price
     );
-    event Deposit(address indexed sender, uint256 amount);
     event Cancel(address indexed sender);
     event Deny(address indexed sender);
     event Accept(address indexed sender);
@@ -125,11 +124,4 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         emit TokenBalance(balance);
     }
 
-    // receive eth transfers
-    receive() external payable {
-        require(!canceled, "canceled");
-        require(token == wrappedNativeToken, "!wrappedNativeToken");
-        IWRAPPED(wrappedNativeToken).deposit{value: msg.value}();
-        emit Deposit(_msgSender(), msg.value);
-    }
 }
