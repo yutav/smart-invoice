@@ -10,7 +10,8 @@ const wrappedTokenAddress = {
   77: "0xc655c6D80ac92d75fBF4F40e95280aEb855B1E87",
   100: "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
   1338: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  31337: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+  31337: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  11155111: ""
 };
 
 const networkName = {

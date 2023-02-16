@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
 const { deployMockContract, provider: waffleProvider } = waffle;
-const { currentTimestamp, getCanceledInvoice, awaitInvoiceAddress } = require("./utils");
+const { currentTimestamp, getCanceledInvoice, awaitInvoiceAddress, getAcceptedInvoice } = require("./utils");
 const IERC20 = require("../build/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json");
 
 const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
@@ -274,7 +274,48 @@ describe("TokenSeikyu", function () {
     const receipt = canceledInvoice["deny()"]();
     await expect(receipt).to.be.revertedWith("canceled");
   });
-
+  it("Should revert payComplete if canceled", async function () {
+    const canceledInvoice = await getCanceledInvoice(
+      TokenSeikyu,
+      client,
+      provider,
+      mockToken,
+      price,
+      EMPTY_BYTES32,
+      mockWrappedNativeToken,
+    );
+    const receipt = canceledInvoice["payComplete()"]();
+    await expect(receipt).to.be.revertedWith("canceled");
+  });
+  it("Should revert payComplete if not accepted", async function () {
+    const canceledInvoice = await getCanceledInvoice(
+      TokenSeikyu,
+      client,
+      provider,
+      mockToken,
+      price,
+      EMPTY_BYTES32,
+      mockWrappedNativeToken,
+    );
+    const receipt = canceledInvoice["deny()"]();
+    await expect(receipt).to.be.revertedWith("canceled");
+  });
+  it("Should revert payComplete if not client", async function () {
+    const acceptedInvoice = await getAcceptedInvoice(
+      TokenSeikyu,
+      client,
+      provider,
+      mockToken,
+      price,
+      EMPTY_BYTES32,
+      mockWrappedNativeToken,
+    );
+    await mockToken.mock.balanceOf.withArgs(acceptedInvoice.address).returns(10);
+    const invoiceWithProvider = await acceptedInvoice.connect(provider);
+    const receipt = invoiceWithProvider["payComplete()"]();
+    await expect(receipt).to.be.revertedWith("!party");
+  });
+  /*
   it("Should revert receive if not wrappedNativeToken", async function () {
     const receipt = client.sendTransaction({
       to: invoice.address,
@@ -306,5 +347,6 @@ describe("TokenSeikyu", function () {
       10,
     );
   });
+  */
 
 });

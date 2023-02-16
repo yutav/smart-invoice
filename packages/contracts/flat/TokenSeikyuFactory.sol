@@ -54,6 +54,8 @@ interface ITokenSeikyu {
 
     function accept() external;
 
+    function payComplete() external;
+
     function tokenBalance(address user, address checkToken) external ;
 }
 

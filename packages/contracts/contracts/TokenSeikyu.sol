@@ -27,6 +27,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     bool public canceled;
     bool public denied;
     bool public accepted;
+    bool public payCompleted;
     bytes32 public details;
 
     event Register(
@@ -37,6 +38,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
     event Cancel(address indexed sender);
     event Deny(address indexed sender);
     event Accept(address indexed sender);
+    event PayComplete(address indexed sender);
     event TokenBalance(uint256 tokenBalance);
 
     // solhint-disable-next-line no-empty-blocks
@@ -85,6 +87,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!canceled, "canceled");
         require(!accepted, "accepted");
         require(!denied, "denied");
+        require(!payCompleted, "payCompleted");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == provider, "!party");
 
@@ -98,6 +101,7 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!canceled, "canceled");
         require(!accepted, "accepted");
         require(!denied, "denied");
+        require(!payCompleted, "payCompleted");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == client, "!party");
 
@@ -110,10 +114,24 @@ contract TokenSeikyu is ITokenSeikyu, Initializable, Context, ReentrancyGuard {
         require(!canceled, "canceled");
         require(!accepted, "accepted");
         require(!denied, "denied");
+        require(!payCompleted, "payCompleted");
         require(block.timestamp < terminationTime, "terminated");
         require(_msgSender() == client, "!party");
 
         accepted = true;
+
+        emit Accept(_msgSender());
+    }
+
+    function payComplete() external override nonReentrant {
+        require(!canceled, "canceled");
+        require(!denied, "denied");
+        // check already accepted
+        require(accepted, "!accepted");
+        require(!payCompleted, "payCompleted");
+        require(block.timestamp < terminationTime, "terminated");
+        require(_msgSender() == client, "!party");
+        payCompleted = true;
 
         emit Accept(_msgSender());
     }

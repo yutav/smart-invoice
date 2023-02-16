@@ -34,6 +34,10 @@ module.exports = {
       url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
+    sepolia: {
+      url: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_PROJECT_ID}`,
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
     ganache: {
       url: "http://127.0.0.1:8555",
       defaultBalanceEther: 1000,

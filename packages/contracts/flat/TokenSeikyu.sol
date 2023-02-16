@@ -34,6 +34,8 @@ interface ITokenSeikyu {
 
     function accept() external;
 
+    function payComplete() external;
+
     function tokenBalance(address user, address checkToken) external ;
 }
 
@@ -1593,5 +1595,4 @@ interface IERC20 {
 
     /**
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
+     * a call to {approve}. 

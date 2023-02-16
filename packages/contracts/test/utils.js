@@ -62,3 +62,37 @@ module.exports.getCanceledInvoice = async (
     .withArgs(provider.address);
   return invoiceWithProvider;
 };
+
+module.exports.getAcceptedInvoice = async (
+  TokenSeikyu,
+  client,
+  provider,
+  mockToken,
+  price,
+  details,
+  mockWrappedNativeToken,
+  value = 0,
+) => {
+  const currentTime = await module.exports.currentTimestamp();
+  const newInvoice = await TokenSeikyu.deploy();
+  await newInvoice.deployed();
+  await newInvoice.init(
+    client.address,
+    provider.address,
+    mockToken.address,
+    price,
+    currentTime + 1000,
+    details,
+    mockWrappedNativeToken.address
+  );
+  expect(await newInvoice["accepted()"]()).to.equal(false);
+
+  const invoiceWithClient = await newInvoice.connect(client);
+  await mockToken.mock.balanceOf.withArgs(invoiceWithClient.address).returns(10);
+  const receipt = invoiceWithClient["accept()"]();
+
+  await expect(receipt)
+    .to.emit(invoiceWithClient, "Accept")
+    .withArgs(client.address);
+  return invoiceWithClient;
+};
